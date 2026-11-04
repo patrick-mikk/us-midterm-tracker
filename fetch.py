@@ -13,7 +13,6 @@ Only races whose counts changed are re-simulated; the rest reuse cached summarie
 """
 import argparse
 import datetime as dt
-import fcntl
 import json
 import os
 import sys
@@ -40,6 +39,24 @@ HISTORY_MAX = 240
 
 
 # ------------------------------------------------------------------ helpers
+def acquire_lock(path):
+    """Non-blocking exclusive lock. Works on Linux/macOS (fcntl) and Windows (msvcrt).
+    Returns the open file handle (keep it alive) or None if another run holds the lock."""
+    fh = open(path, "a+")
+    try:
+        if os.name == "nt":
+            import msvcrt
+            fh.seek(0)
+            msvcrt.locking(fh.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return fh
+    except OSError:
+        fh.close()
+        return None
+
+
 def eastern_now_label(ms):
     t = dt.datetime.fromtimestamp(ms / 1000, tz=dt.timezone.utc)
     try:
@@ -160,10 +177,8 @@ def main(argv=None):
     os.makedirs(LOGS, exist_ok=True)
     lock_fh = None
     if not args.no_lock:
-        lock_fh = open(LOCK, "w")
-        try:
-            fcntl.flock(lock_fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except OSError:
+        lock_fh = acquire_lock(LOCK)
+        if lock_fh is None:
             log("previous run still going; exiting")
             return 0
     t0 = time.time()

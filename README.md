@@ -15,7 +15,19 @@ scripts/            build_races.py, build_baselines.py, dev_server.py, record.py
 tests/              unit tests, adapter fixture tests, backtest
 ```
 
-## Run it on the laptop
+## Run it on a Windows laptop (or any laptop)
+
+Needs Python 3.9 or newer from python.org (tick "Add python.exe to PATH" in the installer). Then:
+
+- **Live sources**: double-click `run_local.bat` (or `py run_local.py`).
+- **Simulated night**: double-click `run_demo.bat` (or `py run_local.py --demo --reset`).
+
+A console window stays open, the page opens in your browser at http://127.0.0.1:8766, and both the
+data (every 60 seconds live, 10 in demo) and the page (every 20 seconds) refresh on their own.
+Close the window to stop. Options: `--states NC` to fetch only some states, `--every 30` to change
+the update interval, `--speed 60` for a faster demo night, `--port 9000` for another port.
+
+## Run it on the laptop (developer loop)
 
 ```bash
 python3 scripts/dev_server.py --demo          # simulated election night at http://127.0.0.1:8766
