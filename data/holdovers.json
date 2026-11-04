@@ -1,0 +1,12 @@
+{
+ "note": "Senate seats not up in 2026. The two independents (Maine and Vermont) caucus with the Democrats.",
+ "holdovers": {
+  "REP": 31,
+  "DEM": 32,
+  "IND": 2
+ },
+ "independentsCaucusWith": "DEM",
+ "majority": 51,
+ "seats": 100,
+ "vicePresidentBreaksTies": true
+}
