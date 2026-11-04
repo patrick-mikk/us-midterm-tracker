@@ -1,0 +1,257 @@
+{
+ "note": "Statewide priors are approximate 2024 presidential figures (REP minus DEM, points). County detail comes from MEDSL files when provided.",
+ "midtermTurnoutRatio": 0.72,
+ "states": {
+  "AL": {
+   "total2024": 2270000,
+   "margin2024": 30.5,
+   "expectedMidterm": 1634400
+  },
+  "AK": {
+   "total2024": 340000,
+   "margin2024": 13.1,
+   "expectedMidterm": 244800
+  },
+  "AZ": {
+   "total2024": 3430000,
+   "margin2024": 5.5,
+   "expectedMidterm": 2469600
+  },
+  "AR": {
+   "total2024": 1180000,
+   "margin2024": 30.6,
+   "expectedMidterm": 849600
+  },
+  "CA": {
+   "total2024": 15800000,
+   "margin2024": -20.1,
+   "expectedMidterm": 11376000
+  },
+  "CO": {
+   "total2024": 3200000,
+   "margin2024": -11.0,
+   "expectedMidterm": 2304000
+  },
+  "CT": {
+   "total2024": 1700000,
+   "margin2024": -14.5,
+   "expectedMidterm": 1224000
+  },
+  "DE": {
+   "total2024": 510000,
+   "margin2024": -14.7,
+   "expectedMidterm": 367200
+  },
+  "FL": {
+   "total2024": 10800000,
+   "margin2024": 13.1,
+   "expectedMidterm": 7776000
+  },
+  "GA": {
+   "total2024": 5260000,
+   "margin2024": 2.2,
+   "expectedMidterm": 3787200
+  },
+  "HI": {
+   "total2024": 520000,
+   "margin2024": -23.3,
+   "expectedMidterm": 374400
+  },
+  "ID": {
+   "total2024": 900000,
+   "margin2024": 36.5,
+   "expectedMidterm": 648000
+  },
+  "IL": {
+   "total2024": 5600000,
+   "margin2024": -11.0,
+   "expectedMidterm": 4032000
+  },
+  "IN": {
+   "total2024": 2970000,
+   "margin2024": 19.0,
+   "expectedMidterm": 2138400
+  },
+  "IA": {
+   "total2024": 1670000,
+   "margin2024": 13.2,
+   "expectedMidterm": 1202400
+  },
+  "KS": {
+   "total2024": 1330000,
+   "margin2024": 16.2,
+   "expectedMidterm": 957600
+  },
+  "KY": {
+   "total2024": 2130000,
+   "margin2024": 30.5,
+   "expectedMidterm": 1533600
+  },
+  "LA": {
+   "total2024": 2050000,
+   "margin2024": 22.1,
+   "expectedMidterm": 1476000
+  },
+  "ME": {
+   "total2024": 830000,
+   "margin2024": -6.9,
+   "expectedMidterm": 597600
+  },
+  "MD": {
+   "total2024": 2970000,
+   "margin2024": -29.0,
+   "expectedMidterm": 2138400
+  },
+  "MA": {
+   "total2024": 3500000,
+   "margin2024": -25.4,
+   "expectedMidterm": 2520000
+  },
+  "MI": {
+   "total2024": 5660000,
+   "margin2024": 1.4,
+   "expectedMidterm": 4075200
+  },
+  "MN": {
+   "total2024": 3270000,
+   "margin2024": -4.2,
+   "expectedMidterm": 2354400
+  },
+  "MS": {
+   "total2024": 1230000,
+   "margin2024": 22.8,
+   "expectedMidterm": 885600
+  },
+  "MO": {
+   "total2024": 3030000,
+   "margin2024": 18.4,
+   "expectedMidterm": 2181600
+  },
+  "MT": {
+   "total2024": 600000,
+   "margin2024": 19.9,
+   "expectedMidterm": 432000
+  },
+  "NE": {
+   "total2024": 950000,
+   "margin2024": 20.4,
+   "expectedMidterm": 684000
+  },
+  "NV": {
+   "total2024": 1490000,
+   "margin2024": 3.1,
+   "expectedMidterm": 1072800
+  },
+  "NH": {
+   "total2024": 830000,
+   "margin2024": -2.8,
+   "expectedMidterm": 597600
+  },
+  "NJ": {
+   "total2024": 4190000,
+   "margin2024": -5.9,
+   "expectedMidterm": 3016800
+  },
+  "NM": {
+   "total2024": 920000,
+   "margin2024": -6.0,
+   "expectedMidterm": 662400
+  },
+  "NY": {
+   "total2024": 8400000,
+   "margin2024": -12.6,
+   "expectedMidterm": 6048000
+  },
+  "NC": {
+   "total2024": 5700000,
+   "margin2024": 3.2,
+   "expectedMidterm": 4104000
+  },
+  "ND": {
+   "total2024": 370000,
+   "margin2024": 36.6,
+   "expectedMidterm": 266400
+  },
+  "OH": {
+   "total2024": 5700000,
+   "margin2024": 11.2,
+   "expectedMidterm": 4104000
+  },
+  "OK": {
+   "total2024": 1560000,
+   "margin2024": 34.2,
+   "expectedMidterm": 1123200
+  },
+  "OR": {
+   "total2024": 2270000,
+   "margin2024": -14.3,
+   "expectedMidterm": 1634400
+  },
+  "PA": {
+   "total2024": 7030000,
+   "margin2024": 1.7,
+   "expectedMidterm": 5061600
+  },
+  "RI": {
+   "total2024": 520000,
+   "margin2024": -13.8,
+   "expectedMidterm": 374400
+  },
+  "SC": {
+   "total2024": 2550000,
+   "margin2024": 17.9,
+   "expectedMidterm": 1836000
+  },
+  "SD": {
+   "total2024": 430000,
+   "margin2024": 29.6,
+   "expectedMidterm": 309600
+  },
+  "TN": {
+   "total2024": 3090000,
+   "margin2024": 29.8,
+   "expectedMidterm": 2224800
+  },
+  "TX": {
+   "total2024": 11330000,
+   "margin2024": 13.7,
+   "expectedMidterm": 8157600
+  },
+  "UT": {
+   "total2024": 1500000,
+   "margin2024": 21.6,
+   "expectedMidterm": 1080000
+  },
+  "VT": {
+   "total2024": 370000,
+   "margin2024": -31.9,
+   "expectedMidterm": 266400
+  },
+  "VA": {
+   "total2024": 4480000,
+   "margin2024": -5.8,
+   "expectedMidterm": 3225600
+  },
+  "WA": {
+   "total2024": 3900000,
+   "margin2024": -18.3,
+   "expectedMidterm": 2808000
+  },
+  "WV": {
+   "total2024": 760000,
+   "margin2024": 41.8,
+   "expectedMidterm": 547200
+  },
+  "WI": {
+   "total2024": 3420000,
+   "margin2024": 0.9,
+   "expectedMidterm": 2462400
+  },
+  "WY": {
+   "total2024": 270000,
+   "margin2024": 45.8,
+   "expectedMidterm": 194400
+  }
+ },
+ "counties": {}
+}

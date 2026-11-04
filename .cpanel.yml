@@ -1,0 +1,14 @@
+---
+# cPanel Git Version Control deploy. Copies code to ~/midterms-tracker and the site to the
+# subdomain's document root. Never touches state/, logs/ or the generated site/data/ on the server.
+# Set DOCROOT to the path cPanel shows for the subdomain (confirm it in Domains).
+deployment:
+  tasks:
+    - export APP=$HOME/midterms-tracker
+    - export DOCROOT=$HOME/midterms.mikkelsen.ca
+    - /bin/mkdir -p $APP/adapters $APP/data $APP/state $APP/logs $DOCROOT/data/states
+    - /bin/cp fetch.py model.py chambers.py $APP/
+    - /bin/cp adapters/*.py $APP/adapters/
+    - /bin/cp data/races.json data/holdovers.json data/baselines.json $APP/data/
+    - /bin/cp site/index.html $DOCROOT/index.html
+    - /bin/cp site/.htaccess $DOCROOT/.htaccess

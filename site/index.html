@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="en-CA" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Midterms 2026 Tracker</title>
+<meta name="description" content="Live US midterm results for the Senate, House and governors, with this tracker's own statistical projections, path-to-victory simulations and county-level geographic analysis.">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f1216'/%3E%3Crect x='5' y='17' width='10' height='9' rx='2' fill='%234f8ef7'/%3E%3Crect x='17' y='9' width='10' height='17' rx='2' fill='%23ef5a5a'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0b0e12;--surface:#12161c;--surface-2:#181d25;--surface-3:#1f2630;--line:#262d38;--line-2:#303a47;
+  --text:#e9ecf1;--text-2:#aab3c0;--muted:#6f7a89;--accent:#d7b36a;
+  --dem:#4f8ef7;--dem-soft:rgba(79,142,247,.28);--rep:#ef5a5a;--rep-soft:rgba(239,90,90,.28);
+  --ind:#9b7bd6;--ind-soft:rgba(155,123,214,.3);--oth:#7a8599;--uncalled:#3a4452;
+  --good:#3fb47c;--warn:#e0a63a;--bad:#e35d5d;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --radius:12px;--shadow:0 1px 0 rgba(255,255,255,.03) inset,0 10px 30px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#f3f3f0;--surface:#ffffff;--surface-2:#f7f7f4;--surface-3:#eeeeea;--line:#e2e2dc;--line-2:#d2d2ca;
+  --text:#15181d;--text-2:#4a5260;--muted:#7d8795;--accent:#8a6a10;
+  --dem:#2a6fd6;--dem-soft:rgba(42,111,214,.22);--rep:#d64545;--rep-soft:rgba(214,69,69,.22);
+  --ind:#6e4fc4;--ind-soft:rgba(110,79,196,.22);--oth:#6b7483;--uncalled:#cfd3d9;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.06);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.serif{font-family:var(--serif);font-weight:600;letter-spacing:.005em;margin:0}
+h1{font-size:28px;line-height:1.1}
+h2{font-size:20px}
+h3{font-size:16px}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.muted{color:var(--muted)}
+.t2{color:var(--text-2)}
+.small{font-size:12.5px}
+.tiny{font-size:11px}
+.hide{display:none!important}
+
+/* header */
+header{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hdr{display:flex;align-items:center;gap:14px;padding:12px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;flex:1;min-width:220px}
+.brand .kicker{font-family:var(--serif);color:var(--accent);font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);font-size:12.5px;white-space:nowrap}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--good)}
+.pill.warn{border-color:var(--warn);color:var(--warn)}
+.pill.warn .dot{background:var(--warn)}
+.pill.sim{border-color:var(--accent);color:var(--accent)}
+.pill.sim .dot{background:var(--accent)}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{padding:5px 12px;font-size:12.5px;color:var(--text-2)}
+.seg button.on{background:var(--surface-3);color:var(--text);font-weight:600}
+.icon-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--line-2);background:var(--surface);display:inline-flex;align-items:center;justify-content:center}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{padding:10px 14px;font-size:14px;color:var(--text-2);border-bottom:2px solid transparent;white-space:nowrap}
+nav.tabs button.on{color:var(--text);border-bottom-color:var(--accent)}
+nav.tabs button .cnt{font-size:11px;color:var(--muted);margin-left:5px}
+
+/* source strip */
+.sources{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0 2px;align-items:center}
+.src{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.src .dot{width:7px;height:7px;border-radius:50%}
+.src.ok .dot{background:var(--good)}.src.stale .dot{background:var(--warn)}.src.fail .dot{background:var(--bad)}
+.notice{margin:12px 0 0;padding:10px 14px;border-radius:10px;border:1px solid var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent);color:var(--text);font-size:13.5px}
+.notice.sim{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+
+main{padding:16px 0 40px}
+section.tab{display:none}section.tab.on{display:block}
+.grid{display:grid;gap:14px}
+.grid.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.cards{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.grid.cards.compact{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+@media(max-width:900px){.grid.c3{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.grid.c3,.grid.c2{grid-template-columns:1fr}h1{font-size:24px}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);min-width:0}
+.card.pad0{padding:0}
+.card-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
+.card-h h2,.card-h h3{display:flex;align-items:baseline;gap:8px}
+.sub{font-size:12.5px;color:var(--muted)}
+.sect-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 0 10px}
+.sect-h h2{font-size:22px}
+
+/* chamber */
+.ch-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px}
+.ch-num{font-family:var(--serif);font-size:34px;line-height:1;font-weight:600}
+.ch-num.dem{color:var(--dem)}.ch-num.rep{color:var(--rep)}
+.ch-lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bar{position:relative;height:18px;border-radius:5px;overflow:hidden;background:var(--uncalled);display:flex}
+.bar span{height:100%;display:block}
+.bar .maj{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);opacity:.85}
+.bar .maj::after{content:attr(data-l);position:absolute;top:-16px;left:-14px;font-size:10px;color:var(--text-2);width:30px;text-align:center}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--text-2);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:5px}
+.hatch-dem{background:repeating-linear-gradient(135deg,var(--dem) 0 3px,var(--dem-soft) 3px 6px)}
+.hatch-rep{background:repeating-linear-gradient(135deg,var(--rep) 0 3px,var(--rep-soft) 3px 6px)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:12.5px;margin-top:10px}
+.kv b{font-weight:600}
+.prob-row{display:flex;gap:10px;align-items:center;margin-top:10px;font-size:12.5px}
+.prob{flex:1;height:10px;border-radius:5px;overflow:hidden;display:flex;background:var(--uncalled)}
+.prob span{display:block;height:100%}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.02em;border:1px solid var(--line-2);color:var(--text-2);background:var(--surface-2);white-space:nowrap}
+.chip.projected{background:var(--text);color:var(--bg);border-color:var(--text)}
+.chip.final{background:var(--surface-3);color:var(--text);border-color:var(--line-2)}
+.chip.withdrawn{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn);border-color:var(--warn)}
+.chip.runoff,.chip.rcv{border-color:var(--accent);color:var(--accent)}
+.chip.leader{color:var(--text)}
+.chip.no_source{opacity:.65}
+.ptag{display:inline-block;min-width:34px;text-align:center;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:700;color:#fff}
+.ptag.DEM{background:var(--dem)}.ptag.REP{background:var(--rep)}.ptag.IND{background:var(--ind)}.ptag.LIB,.ptag.GRN,.ptag.OTH{background:var(--oth)}
+
+/* race cards */
+.race{cursor:pointer;transition:border-color .15s,transform .15s}
+.race:hover{border-color:var(--line-2);transform:translateY(-1px)}
+.race .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px}
+.race h3{font-size:16px;line-height:1.2}
+.race .meta{font-size:11.5px;color:var(--muted);margin-top:2px}
+.cand{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;font-size:13px;padding:3px 0}
+.cand .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cand .nm.lead{font-weight:600}
+.cand .v{color:var(--text-2)}
+.cand .s{min-width:46px;text-align:right;font-weight:600}
+.cbar{height:6px;border-radius:3px;background:var(--surface-3);overflow:hidden;margin:2px 0 6px;position:relative}
+.cbar span{display:block;height:100%;border-radius:3px}
+.race .foot{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:8px;font-size:12px;color:var(--text-2);flex-wrap:wrap}
+.needs{font-size:12.5px;color:var(--text-2);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px}
+.race.compact{padding:10px 12px}
+.race.compact h3{font-size:14px}
+.race.compact .cand{font-size:12px;padding:1px 0}
+.race.compact .needs,.race.compact .cbar{display:none}
+.race.compact .adv-only{display:none}
+.spark{display:block}
+.mini-hist{display:block;margin-top:6px}
+
+/* filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 12px}
+.filters input,.filters select{font:inherit;font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid var(--line-2);background:var(--surface);color:var(--text);min-width:0}
+.filters input{flex:1;min-width:160px}
+.filters .seg button{padding:6px 10px}
+
+/* map */
+.map-wrap{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px}
+@media(max-width:960px){.map-wrap{grid-template-columns:1fr}}
+.tilemap{width:100%;height:auto;display:block;user-select:none}
+.tile rect{stroke:var(--bg);stroke-width:2;rx:4;transition:opacity .15s}
+.tile text{font-family:var(--sans);font-size:11px;font-weight:700;fill:var(--text);pointer-events:none}
+.tile .sub{font-size:8px;font-weight:600;fill:var(--text-2)}
+.tile.on rect{stroke:var(--accent);stroke-width:3}
+.tile:hover rect{opacity:.85}
+.tile.dim rect{opacity:.35}
+.tip{position:fixed;z-index:60;pointer-events:none;background:var(--surface-3);border:1px solid var(--line-2);color:var(--text);padding:8px 10px;border-radius:8px;font-size:12px;box-shadow:var(--shadow);max-width:260px;display:none}
+.tip b{display:block;margin-bottom:2px}
+.ramp{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-2);margin-top:8px;flex-wrap:wrap}
+.ramp .sw{height:10px;width:110px;border-radius:3px}
+table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+table.tbl th{text-align:left;font-weight:600;color:var(--muted);font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.tbl td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+table.tbl td.r,table.tbl th.r{text-align:right}
+table.tbl tr.rowlink{cursor:pointer}
+table.tbl tr.rowlink:hover td{background:var(--surface-2)}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pbar{display:inline-block;width:70px;height:7px;border-radius:4px;background:var(--surface-3);vertical-align:middle;overflow:hidden}
+.pbar span{display:block;height:100%}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;display:none;align-items:flex-start;justify-content:center;padding:4vh 10px;overflow:auto}
+.modal-bg.on{display:flex}
+.modal{background:var(--surface);border:1px solid var(--line-2);border-radius:16px;width:min(1040px,100%);box-shadow:var(--shadow);padding:18px 18px 22px;position:relative}
+.modal .close{position:absolute;top:10px;right:10px}
+.modal h2{font-size:24px;padding-right:40px}
+.mgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:14px}
+@media(max-width:820px){.mgrid{grid-template-columns:1fr}}
+.panel{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.panel h4{font-size:14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.panel h4 .sub{font-family:var(--sans);font-weight:400}
+svg.chart{width:100%;height:auto;display:block;overflow:visible}
+svg.chart text{font-family:var(--sans);fill:var(--text-2);font-size:10.5px}
+svg.chart .grid line{stroke:var(--line);stroke-width:1}
+svg.chart .axis line,svg.chart .axis path{stroke:var(--line-2)}
+.path-strip{display:flex;gap:2px;flex-wrap:wrap;margin-top:6px;align-items:center}
+.path-strip i{display:block;width:12px;height:16px;border-radius:2px;cursor:pointer}
+.path-strip .marker{width:2px;height:22px;background:var(--text);margin:0 2px;border-radius:0}
+.fact{font-family:var(--serif);font-size:22px;line-height:1.1}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:10px}
+.facts .f{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.facts .f .ch-lbl{margin-bottom:4px}
+.adv{display:none}
+body.advanced .adv{display:block}
+body.advanced .adv-inline{display:inline-flex}
+body.advanced .adv-row{display:flex}
+body.advanced .adv-grid{display:grid}
+.adv-inline,.adv-row,.adv-grid{display:none}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:12.5px;color:var(--text-2)}
+footer ul{margin:8px 0;padding-left:18px}
+.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line-2);border-radius:var(--radius)}
+.callog{font-size:12px;color:var(--text-2);margin:0;padding-left:16px}
+.callog li{margin:2px 0}
+</style>
+</head>
+<body class="advanced">
+<header>
+  <div class="wrap">
+    <div class="hdr">
+      <div class="brand">
+        <h1>Midterms 2026</h1>
+        <span class="kicker">Results tracker</span>
+      </div>
+      <div class="hdr-right">
+        <span id="modePill" class="pill hide"><span class="dot"></span><span></span></span>
+        <span id="updPill" class="pill num"><span class="dot"></span><span id="updText">Loading…</span></span>
+        <div class="seg" id="viewSeg" role="group" aria-label="View">
+          <button data-v="simple">Simple</button><button data-v="advanced" class="on">Advanced</button>
+        </div>
+        <button class="icon-btn" id="themeBtn" title="Toggle light or dark theme" aria-label="Toggle theme">◐</button>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-t="overview" class="on">Overview</button>
+      <button data-t="senate">Senate<span class="cnt" id="cntSen"></span></button>
+      <button data-t="house">House<span class="cnt" id="cntHouse"></span></button>
+      <button data-t="governors">Governors<span class="cnt" id="cntGov"></span></button>
+      <button data-t="map">Geography</button>
+      <button data-t="states">States &amp; sources</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="notices"></div>
+  <div class="sources" id="sources"></div>
+
+  <section class="tab on" id="tab-overview">
+    <div class="grid c3" id="chamberCards"></div>
+    <div class="sect-h"><h2>Key races</h2><span class="sub">Closest uncalled Senate and governor races first</span></div>
+    <div class="grid cards" id="keyRaces"></div>
+    <div class="sect-h"><h2>Map</h2><span class="sub">Tap a state for detail</span></div>
+    <div class="card" id="ovMapCard"></div>
+  </section>
+
+  <section class="tab" id="tab-senate">
+    <div class="grid c2"><div class="card" id="senateCard"></div><div class="card adv" id="senateAdv"></div></div>
+    <div class="filters" data-for="senate"></div>
+    <div class="grid cards" id="list-senate"></div>
+  </section>
+
+  <section class="tab" id="tab-house">
+    <div class="grid c2"><div class="card" id="houseCard"></div><div class="card adv" id="houseAdv"></div></div>
+    <div class="filters" data-for="house"></div>
+    <div class="grid cards compact" id="list-house"></div>
+  </section>
+
+  <section class="tab" id="tab-governors">
+    <div class="grid c2"><div class="card" id="govCard"></div><div class="card adv" id="govAdv"></div></div>
+    <div class="filters" data-for="governors"></div>
+    <div class="grid cards" id="list-governors"></div>
+  </section>
+
+  <section class="tab" id="tab-map">
+    <div class="filters">
+      <div class="seg" id="mapMode">
+        <button data-m="senate" class="on">Senate</button><button data-m="governor">Governors</button><button data-m="house">House seats</button><button data-m="swing">Swing vs 2024</button><button data-m="progress">Counting progress</button>
+      </div>
+    </div>
+    <div class="map-wrap">
+      <div class="card" id="mapCard"></div>
+      <div class="card" id="mapSide"><div class="empty">Select a state on the map</div></div>
+    </div>
+    <div class="sect-h"><h2>Statewide swing</h2><span class="sub">Two-party margin so far compared with the 2024 presidential margin</span></div>
+    <div class="card" id="swingCard"></div>
+  </section>
+
+  <section class="tab" id="tab-states">
+    <div class="card pad0 tbl-wrap" id="statesTable"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Projections are this tracker's own model output, not media calls. Official results come from each state after certification.</strong></p>
+    <p id="footSources"></p>
+    <p class="muted">Model: expected vote per county from 2022 and 2024 baselines with a turnout factor learned from completed counties; remaining vote split from each county's counted vote blended toward its baseline; 1000 Monte Carlo draws per race with shared national and statewide shifts, county turnout and split noise. A race is projected only when the leader wins at least 99.5% of draws, the trailing candidate would need 75% or more of 1.5 times the remaining vote, and at least 25% of the expected vote is in (50% in late-counting states). Projections can be withdrawn and stay marked as such. Times are Eastern.</p>
+  </div>
+</footer>
+
+<div class="tip" id="tip"></div>
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
+
+<script>
+'use strict';
+// ------------------------------------------------------------ state
+const S = {
+  data: null, stateFiles: {}, tab: 'overview', view: 'advanced', mapMode: 'senate', mapSel: null,
+  filters: { senate: { q: '', st: 'all', sort: 'close' }, house: { q: '', st: 'all', sort: 'close' }, governors: { q: '', st: 'all', sort: 'close' } },
+  openRace: null, lastOk: 0,
+};
+const STATUS = { no_votes: 'No votes yet', too_early: 'Too early to call', leader: 'Leader', projected: 'Projected winner',
+  withdrawn: 'Projection withdrawn', runoff: 'Runoff likely', rcv: 'RCV tabulation', final: 'Final count', no_source: 'No live source' };
+const CALLED = new Set(['projected', 'final']);
+const OFFICE = { us_senate: 'Senate', us_house: 'House', governor: 'Governor' };
+const TILES = [ // [state, column, row]
+  ['AK',0,0],['ME',10,0],['WI',5,1],['VT',9,1],['NH',10,1],
+  ['WA',0,2],['ID',1,2],['MT',2,2],['ND',3,2],['MN',4,2],['IL',5,2],['MI',6,2],['NY',8,2],['MA',9,2],
+  ['OR',0,3],['NV',1,3],['WY',2,3],['SD',3,3],['IA',4,3],['IN',5,3],['OH',6,3],['PA',7,3],['NJ',8,3],['CT',9,3],['RI',10,3],
+  ['CA',0,4],['UT',1,4],['CO',2,4],['NE',3,4],['MO',4,4],['KY',5,4],['WV',6,4],['VA',7,4],['MD',8,4],['DE',9,4],
+  ['AZ',1,5],['NM',2,5],['KS',3,5],['AR',4,5],['TN',5,5],['NC',6,5],['SC',7,5],
+  ['OK',3,6],['LA',4,6],['MS',5,6],['AL',6,6],['GA',7,6],
+  ['HI',0,7],['TX',3,7],['FL',8,7],
+];
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = n => (n == null || isNaN(n)) ? '–' : String(Math.round(n));
+const pct = (x, d = 1) => (x == null || isNaN(x)) ? '–' : (100 * x).toFixed(d) + '%';
+const pts = (x, d = 1) => (x == null || isNaN(x)) ? '–' : (x > 0 ? '+' : '') + x.toFixed(d);
+const pcol = p => ({ DEM: 'var(--dem)', REP: 'var(--rep)', IND: 'var(--ind)' }[p] || 'var(--oth)');
+const psoft = p => ({ DEM: 'var(--dem-soft)', REP: 'var(--rep-soft)', IND: 'var(--ind-soft)' }[p] || 'var(--uncalled)');
+const partyLabel = p => ({ DEM: 'Democratic', REP: 'Republican', IND: 'Independent', LIB: 'Libertarian', GRN: 'Green', OTH: 'Other' }[p] || p);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+function mix(c1, c2, t) { // hex blend
+  const h = c => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
+  const a = h(c1), b = h(c2); return `rgb(${a.map((v, i) => Math.round(lerp(v, b[i], t))).join(',')})`;
+}
+const THEME = () => document.documentElement.getAttribute('data-theme') === 'light'
+  ? { dem: '#2a6fd6', rep: '#d64545', mid: '#cfd3d9', ind: '#6e4fc4', uncalled: '#cfd3d9' }
+  : { dem: '#4f8ef7', rep: '#ef5a5a', mid: '#3a4452', ind: '#9b7bd6', uncalled: '#3a4452' };
+function divergeColor(pDem) { // probability or share for DEM, 0..1 -> red..gray..blue
+  const T = THEME(); if (pDem == null) return T.uncalled;
+  return pDem >= .5 ? mix(T.mid, T.dem, clamp((pDem - .5) / .5, 0, 1)) : mix(T.mid, T.rep, clamp((.5 - pDem) / .5, 0, 1));
+}
+function swingColor(sw) { // points, DEM positive
+  const T = THEME(); if (sw == null) return T.uncalled;
+  const t = clamp(Math.abs(sw) / 10, 0, 1); return sw >= 0 ? mix(T.mid, T.dem, t) : mix(T.mid, T.rep, t);
+}
+function raceById(id) { return S.data?.races.find(r => r.id === id); }
+function leader(r) { return r.candidates && r.candidates[0] && r.counted > 0 ? r.candidates[0] : null; }
+function pDem(r) { return r.winProbParty ? r.winProbParty.DEM ?? (r.winProbParty.REP != null ? 1 - r.winProbParty.REP : null) : null; }
+function closeness(r) { // smaller is closer / more interesting
+  if (r.status === 'no_source') return 99; if (CALLED.has(r.status)) return 50 + (1 - (r.pctExpected || 0));
+  if (r.counted === 0) return 20; const p = pDem(r); return p == null ? 10 : Math.abs(p - .5);
+}
+function stateName(st) { return S.data?.states[st]?.name || st; }
+function swingFor(r) { // observed two-party DEM margin minus 2024 prior, in points
+  if (!r || !r.counted || !S.data) return null;
+  const d = r.candidates.find(c => c.party === 'DEM'), g = r.candidates.find(c => c.party === 'REP');
+  if (!d || !g || (d.votes + g.votes) === 0) return null;
+  const obs = 100 * (d.votes - g.votes) / (d.votes + g.votes);
+  const prior = S.data.priors?.[r.state]; if (prior == null) return null;
+  return obs - prior;
+}
+
+// ------------------------------------------------------------ chrome
+function setTheme(t) { document.documentElement.setAttribute('data-theme', t); try { localStorage.setItem('theme', t); } catch (e) {} renderAll(); }
+function setView(v) { S.view = v; document.body.classList.toggle('advanced', v === 'advanced'); $$('#viewSeg button').forEach(b => b.classList.toggle('on', b.dataset.v === v)); try { localStorage.setItem('view', v); } catch (e) {} renderAll(); }
+function setTab(t) { S.tab = t; $$('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === t)); $$('section.tab').forEach(s => s.classList.toggle('on', s.id === 'tab-' + t)); renderAll(); if (location.hash !== '#' + t) history.replaceState(null, '', '#' + t); }
+$('#themeBtn').onclick = () => setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+$$('#viewSeg button').forEach(b => b.onclick = () => setView(b.dataset.v));
+$$('#tabs button').forEach(b => b.onclick = () => setTab(b.dataset.t));
+$$('#mapMode button').forEach(b => b.onclick = () => { S.mapMode = b.dataset.m; $$('#mapMode button').forEach(x => x.classList.toggle('on', x === b)); renderMapTab(); });
+try { const t = localStorage.getItem('theme'); if (t) document.documentElement.setAttribute('data-theme', t); const v = localStorage.getItem('view'); if (v) { S.view = v; document.body.classList.toggle('advanced', v === 'advanced'); $$('#viewSeg button').forEach(b => b.classList.toggle('on', b.dataset.v === v)); } } catch (e) {}
+
+// tooltip
+const tip = $('#tip');
+function showTip(ev, html) { tip.innerHTML = html; tip.style.display = 'block'; moveTip(ev); }
+function moveTip(ev) { const x = ev.clientX, y = ev.clientY; const w = tip.offsetWidth, h = tip.offsetHeight; tip.style.left = Math.min(x + 14, innerWidth - w - 8) + 'px'; tip.style.top = (y + h + 18 > innerHeight ? y - h - 10 : y + 14) + 'px'; }
+function hideTip() { tip.style.display = 'none'; }
+document.addEventListener('mouseover', e => { const t = e.target.closest('[data-tip]'); if (t) showTip(e, t.dataset.tip); });
+document.addEventListener('mousemove', e => { if (tip.style.display === 'block') { const t = e.target.closest('[data-tip]'); if (t) moveTip(e); else hideTip(); } });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('[data-tip]') && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('[data-tip]'))) hideTip(); });
+
+// ------------------------------------------------------------ small chart builders (inline SVG)
+function svgSpark(hist, w = 120, h = 28, key = 1) { // hist: [[ts, pDem, pct], ...]
+  if (!hist || hist.length < 2) return '';
+  const xs = hist.map((_, i) => i), n = xs.length;
+  const pt = (i, v) => `${(i / (n - 1) * (w - 2) + 1).toFixed(1)},${((1 - v) * (h - 4) + 2).toFixed(1)}`;
+  const d = hist.map((p, i) => (i ? 'L' : 'M') + pt(i, clamp(p[key], 0, 1))).join('');
+  const last = hist[n - 1][key];
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-label="Win probability over time"><line x1="1" x2="${w - 1}" y1="${h / 2}" y2="${h / 2}" stroke="var(--line-2)" stroke-dasharray="2 3"/><path d="${d}" fill="none" stroke="${divergeColor(last)}" stroke-width="2" stroke-linejoin="round"/><circle cx="${w - 1}" cy="${((1 - last) * (h - 4) + 2).toFixed(1)}" r="2.5" fill="${divergeColor(last)}"/></svg>`;
+}
+function svgHist(hist, partyA, w = 320, h = 90, label = true) { // hist: {lo,hi,bins}
+  if (!hist || !hist.bins) return '';
+  const bins = hist.bins, n = bins.length, mx = Math.max(1, ...bins), pad = { l: 6, r: 6, t: 6, b: label ? 18 : 4 };
+  const bw = (w - pad.l - pad.r) / n, width = hist.hi - hist.lo;
+  const colA = pcol(partyA), colB = partyA === 'DEM' ? 'var(--rep)' : partyA === 'REP' ? 'var(--dem)' : 'var(--oth)';
+  let bars = '';
+  bins.forEach((v, i) => {
+    const x0 = hist.lo + i * width / n, mid = x0 + width / n / 2;
+    const bh = v / mx * (h - pad.t - pad.b);
+    bars += `<rect x="${(pad.l + i * bw + .5).toFixed(1)}" y="${(h - pad.b - bh).toFixed(1)}" width="${Math.max(0.5, bw - 1).toFixed(1)}" height="${bh.toFixed(1)}" rx="1.5" fill="${mid >= 0 ? colA : colB}" opacity=".9"><title>${pts(x0, 1)} to ${pts(x0 + width / n, 1)} points: ${v} draws</title></rect>`;
+  });
+  const zx = pad.l + (0 - hist.lo) / width * (w - pad.l - pad.r);
+  const ticks = [-20, -10, 0, 10, 20].map(t => { const x = pad.l + (t - hist.lo) / width * (w - pad.l - pad.r); return `<text x="${x.toFixed(1)}" y="${h - 4}" text-anchor="middle">${t > 0 ? '+' : ''}${t}</text>`; }).join('');
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Distribution of simulated final margin">${bars}<line x1="${zx}" x2="${zx}" y1="${pad.t - 2}" y2="${h - pad.b}" stroke="var(--text)" stroke-width="1.5" stroke-dasharray="3 2"/>${label ? ticks : ''}</svg>`;
+}
+function svgSeatDist(dist, majority, seats, party, w = 420, h = 110) {
+  const keys = Object.keys(dist).map(Number).sort((a, b) => a - b); if (!keys.length) return '';
+  const lo = Math.max(0, keys[0] - 2), hi = Math.min(seats, keys[keys.length - 1] + 2), n = hi - lo + 1;
+  const total = Object.values(dist).reduce((a, b) => a + b, 0), mx = Math.max(...Object.values(dist));
+  const pad = { l: 8, r: 8, t: 8, b: 20 }, bw = (w - pad.l - pad.r) / n;
+  const T = THEME(); const base = party === 'DEM' ? T.dem : T.rep;
+  let bars = '';
+  for (let k = lo; k <= hi; k++) {
+    const v = dist[k] || 0, bh = v / mx * (h - pad.t - pad.b), x = pad.l + (k - lo) * bw;
+    const win = majority ? k >= majority : true;
+    bars += `<rect x="${(x + .5).toFixed(1)}" y="${(h - pad.b - bh).toFixed(1)}" width="${Math.max(.6, bw - 1).toFixed(1)}" height="${bh.toFixed(1)}" rx="1.5" fill="${win ? base : T.uncalled}"><title>${k} seats: ${(100 * v / total).toFixed(1)}% of simulations</title></rect>`;
+  }
+  const step = n > 40 ? 10 : n > 16 ? 5 : 2;
+  let ticks = '';
+  for (let k = Math.ceil(lo / step) * step; k <= hi; k += step) ticks += `<text x="${(pad.l + (k - lo + .5) * bw).toFixed(1)}" y="${h - 5}" text-anchor="middle">${k}</text>`;
+  let maj = '';
+  if (majority && majority >= lo && majority <= hi) { const mx_ = pad.l + (majority - lo) * bw; maj = `<line x1="${mx_}" x2="${mx_}" y1="${pad.t - 4}" y2="${h - pad.b}" stroke="var(--text)" stroke-width="1.5"/><text x="${mx_ + 3}" y="${pad.t + 4}" fill="var(--text)">${majority} for a majority</text>`; }
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Distribution of ${party} seats across simulations">${bars}${maj}${ticks}</svg>`;
+}
+function svgLine(hist, idx, w = 420, h = 80, color = 'var(--dem)', label = 'DEM control probability') {
+  if (!hist || hist.length < 2) return '<div class="muted small">Not enough runs yet for a trend.</div>';
+  const pad = { l: 30, r: 8, t: 6, b: 16 }, n = hist.length;
+  const x = i => pad.l + i / (n - 1) * (w - pad.l - pad.r), y = v => pad.t + (1 - clamp(v, 0, 1)) * (h - pad.t - pad.b);
+  const d = hist.map((p, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ',' + y(p[idx] ?? 0).toFixed(1)).join('');
+  const grid = [0, .5, 1].map(v => `<line x1="${pad.l}" x2="${w - pad.r}" y1="${y(v)}" y2="${y(v)}" class="g"/><text x="${pad.l - 4}" y="${y(v) + 3.5}" text-anchor="end">${v * 100}%</text>`).join('');
+  const t0 = new Date(hist[0][0]), t1 = new Date(hist[n - 1][0]);
+  const tl = t => t.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/New_York' });
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}"><g class="grid" stroke="var(--line)">${grid}</g><path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/><text x="${pad.l}" y="${h - 3}">${tl(t0)} ET</text><text x="${w - pad.r}" y="${h - 3}" text-anchor="end">${tl(t1)} ET</text></svg>`;
+}
+function svgScatter(rows, partyA, partyB, w = 420, h = 260) {
+  // x: baseline/prior margin for A (points), y: current A margin (points). size: expected votes. colour: completeness.
+  const pts_ = rows.filter(r => r.marginPct != null && r.counted > 0);
+  if (!pts_.length) return '<div class="muted small">No counties with votes yet.</div>';
+  const pad = { l: 36, r: 10, t: 10, b: 30 };
+  const xs = pts_.map(r => baselineMarginA(r, partyA, partyB)), ys = pts_.map(r => r.marginPct);
+  const hasBase = xs.some(v => v != null);
+  const lim = Math.ceil(Math.max(10, ...xs.filter(v => v != null).map(Math.abs), ...ys.map(Math.abs)) / 10) * 10;
+  const x = v => pad.l + (v + lim) / (2 * lim) * (w - pad.l - pad.r), y = v => pad.t + (lim - v) / (2 * lim) * (h - pad.t - pad.b);
+  const maxE = Math.max(...pts_.map(r => r.expected || 1));
+  let dots = '';
+  pts_.forEach((r, i) => {
+    const bx = hasBase && xs[i] != null ? xs[i] : 0;
+    const rr = 3 + 11 * Math.sqrt((r.expected || 1) / maxE);
+    const fill = r.marginPct >= 0 ? pcol(partyA) : pcol(partyB);
+    const op = .35 + .6 * clamp(r.counted / (r.expected || 1), 0, 1);
+    dots += `<circle cx="${x(bx).toFixed(1)}" cy="${y(r.marginPct).toFixed(1)}" r="${rr.toFixed(1)}" fill="${fill}" fill-opacity="${op.toFixed(2)}" stroke="var(--bg)" stroke-width="1.5" data-tip="<b>${esc(r.name)}</b>${partyA} margin now ${pts(r.marginPct)} pts${hasBase && xs[i] != null ? `<br>2024 baseline ${pts(xs[i])} pts (swing ${pts(r.marginPct - xs[i])})` : ''}<br>${fmt(r.counted)} of ~${fmt(r.expected)} expected counted (${pct(r.counted / (r.expected || 1), 0)})"/>`;
+  });
+  const ticks = [-lim, -lim / 2, 0, lim / 2, lim];
+  const gx = ticks.map(t => `<line x1="${x(t)}" x2="${x(t)}" y1="${pad.t}" y2="${h - pad.b}"/>`).join('') + ticks.map(t => `<line x1="${pad.l}" x2="${w - pad.r}" y1="${y(t)}" y2="${y(t)}"/>`).join('');
+  const tx = ticks.map(t => `<text x="${x(t)}" y="${h - pad.b + 13}" text-anchor="middle">${t > 0 ? '+' : ''}${t}</text>`).join('') + ticks.map(t => `<text x="${pad.l - 5}" y="${y(t) + 3.5}" text-anchor="end">${t > 0 ? '+' : ''}${t}</text>`).join('');
+  const diag = hasBase ? `<line x1="${x(-lim)}" y1="${y(-lim)}" x2="${x(lim)}" y2="${y(lim)}" stroke="var(--text-2)" stroke-dasharray="4 3" stroke-width="1"/>` : '';
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="County margins against baseline"><g class="grid">${gx}</g>${diag}<line x1="${x(0)}" x2="${x(0)}" y1="${pad.t}" y2="${h - pad.b}" stroke="var(--line-2)"/><line x1="${pad.l}" x2="${w - pad.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line-2)"/>${dots}${tx}<text x="${(w + pad.l) / 2}" y="${h - 2}" text-anchor="middle">${hasBase ? '2024 baseline margin for ' + partyA + ' (points)' : 'No county baseline loaded: counties shown at 0'}</text><text transform="translate(10 ${(h - pad.b + pad.t) / 2}) rotate(-90)" text-anchor="middle">Current ${partyA} margin (points)</text></svg>`;
+}
+function baselineMarginA(row, partyA, partyB) { // row.baseMargin is REP minus DEM
+  if (row.baseMargin == null || row.baseSource !== 'county') return null;
+  if (partyA === 'DEM' && partyB === 'REP') return -row.baseMargin; if (partyA === 'REP' && partyB === 'DEM') return row.baseMargin; return null;
+}
+function svgRemaining(rows, partyA, partyB, w = 420) {
+  const top = rows.filter(r => r.remaining > 0).sort((a, b) => b.remaining - a.remaining).slice(0, 12);
+  if (!top.length) return '<div class="muted small">No votes expected to remain.</div>';
+  const mx = top[0].remaining, rowH = 20, pad = { l: 120, r: 50, t: 4 }, h = top.length * rowH + pad.t + 4;
+  let g = '';
+  top.forEach((r, i) => {
+    const y = pad.t + i * rowH, bw = (w - pad.l - pad.r) * r.remaining / mx;
+    const pA = r.splitA ?? .5, wa = bw * pA;
+    g += `<text x="${pad.l - 6}" y="${y + 13}" text-anchor="end">${esc((r.name || '').slice(0, 20))}</text>
+      <rect x="${pad.l}" y="${y + 3}" width="${Math.max(0, wa - 1).toFixed(1)}" height="${rowH - 7}" rx="2" fill="${pcol(partyA)}" data-tip="<b>${esc(r.name)}</b>~${fmt(r.remaining)} votes still expected<br>Model expects ${pct(pA, 0)} ${partyA} / ${pct(1 - pA, 0)} ${partyB}<br>${pct(r.counted / (r.expected || 1), 0)} counted"/>
+      <rect x="${(pad.l + wa + 1).toFixed(1)}" y="${y + 3}" width="${Math.max(0, bw - wa - 1).toFixed(1)}" height="${rowH - 7}" rx="2" fill="${pcol(partyB)}" data-tip="<b>${esc(r.name)}</b>~${fmt(r.remaining)} votes still expected<br>Model expects ${pct(pA, 0)} ${partyA} / ${pct(1 - pA, 0)} ${partyB}"/>
+      <text x="${pad.l + bw + 5}" y="${y + 13}">${fmt(r.remaining)}</text>`;
+  });
+  return `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Where the remaining vote is">${g}</svg>`;
+}
+
+// ------------------------------------------------------------ render: header, notices, sources
+function renderHeader() {
+  const d = S.data; if (!d) return;
+  const age = Date.now() - d.generatedAt;
+  const paused = age > 5 * 60 * 1000;
+  const up = $('#updPill'); up.classList.toggle('warn', paused);
+  $('#updText').textContent = (paused ? 'Updates paused · last ' : 'Updated ') + d.generatedLabel;
+  const mp = $('#modePill'); mp.classList.remove('hide', 'sim');
+  if (d.mode === 'demo') { mp.classList.add('sim'); mp.lastElementChild.textContent = 'Simulation' + (d.simMinutes != null ? ' · ' + simClock(d.simMinutes) : ''); }
+  else if (d.mode === 'replay') { mp.classList.add('sim'); mp.lastElementChild.textContent = 'Replay ' + (d.replay || ''); }
+  else mp.classList.add('hide');
+  const n = o => d.races.filter(r => r.office === o), c = rs => rs.filter(r => CALLED.has(r.status)).length;
+  $('#cntSen').textContent = `${c(n('us_senate'))}/${n('us_senate').length}`;
+  $('#cntHouse').textContent = `${c(n('us_house'))}/${n('us_house').length}`;
+  $('#cntGov').textContent = `${c(n('governor'))}/${n('governor').length}`;
+  let notices = '';
+  if (paused) notices += `<div class="notice"><strong>Updates paused.</strong> The data file is more than 5 minutes old, which means the update job on the server has stopped. Numbers below are from ${esc(d.generatedLabel)}.</div>`;
+  if (d.mode !== 'live') notices += `<div class="notice sim"><strong>${d.mode === 'demo' ? 'Simulated election night.' : 'Replay of recorded data.'}</strong> Every number on this page is ${d.mode === 'demo' ? 'synthetic test data generated to exercise the model and page, not a real result or forecast' : 'from a recorded snapshot, not live'}.</div>`;
+  if (!d.callsEnabled) notices += `<div class="notice"><strong>Leaders only.</strong> Projections are switched off until the model's backtest passes; this page shows leaders and simulation shares but makes no calls.</div>`;
+  const noSrc = Object.values(d.states).filter(s => !s.hasSource).length;
+  if (d.mode === 'live' && noSrc) notices += `<div class="notice" style="border-color:var(--line-2);background:var(--surface)">${noSrc} states have no live source in this tracker tonight. Their races are listed as "No live source" and are counted as uncalled.</div>`;
+  $('#notices').innerHTML = notices;
+  $('#sources').innerHTML = d.sources.filter(s => d.mode !== 'demo').sort((a, b) => a.state.localeCompare(b.state)).map(s => {
+    const cls = s.ok && !s.stale ? 'ok' : s.ok ? 'stale' : 'fail';
+    const when = s.fetchedAt ? new Date(s.fetchedAt).toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'America/New_York' }) + ' ET' : 'never';
+    return `<span class="src ${cls}" data-tip="<b>${esc(s.name || s.state)}</b>${cls === 'ok' ? 'OK' : cls === 'stale' ? 'Stale (over 5 minutes)' : 'Failing'}: last read ${when}${s.error ? '<br>' + esc(s.error) : ''}${s.partial ? '<br>' + s.partial + ' counties missing this run' : ''}"><span class="dot"></span>${s.state}</span>`;
+  }).join('') + (d.mode === 'demo' ? `<span class="src ok"><span class="dot"></span>Simulation adapter · 50 states</span>` : '');
+}
+function simClock(mins) { const t = 19 * 60 + Math.round(mins); const h = Math.floor(t / 60) % 24, m = t % 60; return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} ET`; }
+
+// ------------------------------------------------------------ render: chambers
+function chamberCard(key, title, full = false, bare = false) {
+  const d = S.data, c = d.chambers[key]; if (!c) return '';
+  const T = c.seats, maj = c.majority;
+  const sec = c.secured, lead = c.ifLeadersHold;
+  const demS = sec.DEM, repS = sec.REP, demL = lead.DEM - sec.DEM, repL = lead.REP - sec.REP, oth = (sec.OTH || 0) + ((lead.OTH || 0) - (sec.OTH || 0));
+  const unc = T - demS - repS - demL - repL - oth;
+  const w = n => (100 * n / T).toFixed(2) + '%';
+  const indNote = key === 'senate' ? ` Independents (${d.holdovers.holdovers.IND}) are counted with the Democrats.` : '';
+  const cp = c.controlProb;
+  const hist = c.history || [];
+  const path = c.path || [];
+  let pathStrip = '';
+  if (full && path.length) {
+    const demNeed = maj ? maj - sec.DEM : null; let cum = 0, placed = false;
+    pathStrip = `<div class="path-strip" aria-label="Uncalled races ordered by Democratic win probability">` + path.map(p => {
+      let m = ''; if (demNeed != null && !placed && cum === demNeed) { m = '<i class="marker" data-tip="Democrats reach a majority if they win every race to the left"></i>'; placed = true; } cum++;
+      return m + `<i style="background:${divergeColor(p.pDem)}" data-id="${p.id}" data-tip="<b>${esc(p.name)}</b>DEM ${pct(p.pDem, 0)} · REP ${pct(p.pRep, 0)}<br>${esc(STATUS[p.status])}${p.marginPct != null ? ' · margin ' + pts(p.marginPct) + ' pts' : ''}<br>${pct(p.pctExpected, 0)} of expected vote counted"></i>`;
+    }).join('') + '</div><div class="tiny muted" style="margin-top:4px">Each square is an uncalled race, ordered by the Democratic win share in the simulations. The line marks where a Democratic majority would be reached.</div>';
+  }
+  const tipping = (c.tippingPoint || []).slice(0, 3).map(t => { const r = raceById(t.id); return r ? `<span class="pill" data-id="${r.id}" style="cursor:pointer">${esc(r.name)} · ${pct(t.share, 0)}</span>` : ''; }).join(' ');
+  const inner = `<div class="card-h"><h2>${title}</h2><span class="sub">${maj ? maj + ' for a majority' : T + ' races'}</span></div>
+    <div class="ch-top">
+      <div><div class="ch-lbl">Democrats</div><div class="ch-num dem num" data-tip="Secured ${sec.DEM}${demL ? ', leading in ' + demL + ' more' : ''}">${sec.DEM}<span class="t2" style="font-size:16px">${demL ? ' +' + demL : ''}</span></div></div>
+      <div style="text-align:center"><div class="ch-lbl">Uncalled</div><div class="ch-num num" style="font-size:22px;color:var(--text-2)">${c.uncalled}</div></div>
+      <div style="text-align:right"><div class="ch-lbl">Republicans</div><div class="ch-num rep num" data-tip="Secured ${sec.REP}${repL ? ', leading in ' + repL + ' more' : ''}"><span class="t2" style="font-size:16px">${repL ? '+' + repL + ' ' : ''}</span>${sec.REP}</div></div>
+    </div>
+    <div class="bar" role="img" aria-label="${title}: Democrats ${sec.DEM} secured, Republicans ${sec.REP} secured, ${c.uncalled} uncalled">
+      <span style="width:${w(demS)};background:var(--dem)"></span><span class="hatch-dem" style="width:${w(demL)}"></span>
+      <span style="width:${w(oth)};background:var(--ind)"></span>
+      <span style="width:${w(unc)};background:transparent"></span>
+      <span class="hatch-rep" style="width:${w(repL)}"></span><span style="width:${w(repS)};background:var(--rep)"></span>
+      ${maj ? `<i class="maj" style="left:${w(maj)}" data-l="${maj}"></i>` : ''}
+    </div>
+    <div class="legend"><span><i style="background:var(--dem)"></i>DEM called</span><span><i class="hatch-dem"></i>DEM leading</span><span><i style="background:var(--uncalled)"></i>Uncalled</span><span><i class="hatch-rep"></i>REP leading</span><span><i style="background:var(--rep)"></i>REP called</span>${oth ? '<span><i style="background:var(--ind)"></i>IND/other</span>' : ''}</div>
+    ${cp ? `<div class="prob-row"><span class="ch-lbl">Control</span><div class="prob" role="img" aria-label="Democratic control probability ${pct(cp.DEM, 0)}"><span style="width:${(100 * cp.DEM).toFixed(1)}%;background:var(--dem)"></span><span style="width:${(100 * (1 - cp.DEM - cp.REP)).toFixed(1)}%;background:var(--uncalled)"></span><span style="width:${(100 * cp.REP).toFixed(1)}%;background:var(--rep)"></span></div><span class="num"><b style="color:var(--dem)">${pct(cp.DEM, 0)}</b> · <b style="color:var(--rep)">${pct(cp.REP, 0)}</b></span></div>` : ''}
+    <div class="kv adv">
+      <span class="muted">Expected seats</span><span class="num"><b style="color:var(--dem)">${c.expectedSeats.DEM}</b> DEM · <b style="color:var(--rep)">${c.expectedSeats.REP}</b> REP</span>
+      ${key === 'senate' ? `<span class="muted">Holdovers</span><span class="num">${d.holdovers.holdovers.DEM} DEM · ${d.holdovers.holdovers.REP} REP · ${d.holdovers.holdovers.IND} IND</span>` : ''}
+      ${c.tieProb ? `<span class="muted">50–50 chance</span><span class="num">${pct(c.tieProb, 1)} (the vice president breaks ties)</span>` : ''}
+    </div>
+    <div class="tiny muted" style="margin-top:8px">Tracker projections from unofficial counts.${indNote}</div>
+    ${full ? pathStrip : ''}
+    ${full && tipping ? `<div class="adv" style="margin-top:10px"><div class="ch-lbl" style="margin-bottom:4px">Tipping-point races</div><div style="display:flex;gap:6px;flex-wrap:wrap">${tipping}</div></div>` : ''}`;
+  return bare ? inner : `<div class="card" data-chamber="${key}">${inner}</div>`;
+}
+function chamberAdv(key, party = 'DEM') {
+  const c = S.data.chambers[key]; if (!c) return '';
+  const dist = c.distribution?.[party] || {};
+  return `<div class="card-h"><h3>Path to victory simulations</h3><span class="sub">${S.data.draws} joint draws</span></div>
+    <div class="ch-lbl">Democratic seats across simulations</div>${svgSeatDist(dist, c.majority, c.seats, 'DEM')}
+    <div class="legend"><span><i style="background:var(--dem)"></i>Majority outcomes</span><span><i style="background:var(--uncalled)"></i>Short of a majority</span></div>
+    ${c.majority ? `<div class="ch-lbl" style="margin-top:12px">Democratic control probability through the night</div>${svgLine(c.history, 1, 420, 80, 'var(--dem)')}` : `<div class="ch-lbl" style="margin-top:12px">Expected Democratic governorships through the night</div>${svgLine((c.history || []).map(h => [h[0], (h[2] || 0) / c.seats]), 1, 420, 80, 'var(--dem)', 'Expected share of governorships')}`}`;
+}
+
+// ------------------------------------------------------------ render: race cards
+function statusChip(r) { return `<span class="chip ${r.status}">${esc(STATUS[r.status] || r.status)}${r.status === 'leader' && pDem(r) != null && r.candidates[0] ? ` · ${pct(r.candidates[0].p, 0)}` : ''}</span>`; }
+function needsLine(r) {
+  if (!r.needs || r.needs.share == null || CALLED.has(r.status) || r.counted === 0) return '';
+  if (r.needs.share > 1) return `<div class="needs">${esc(r.needs.candidate)} would need more votes than the roughly ${fmt(r.needs.remaining)} still expected.</div>`;
+  return `<div class="needs">${esc(r.needs.candidate)} needs ${pct(r.needs.share, 1)} of the roughly ${fmt(r.needs.remaining)} two-party votes still expected.</div>`;
+}
+function raceCard(r, compact = false) {
+  const cands = (r.candidates || []).slice(0, compact ? 2 : 3);
+  const mx = Math.max(1, ...cands.map(c => c.votes || 0));
+  const hist = S.data.hist?.[r.id];
+  const rows = cands.map((c, i) => `<div class="cand"><span class="ptag ${c.party}">${c.party}</span><span class="nm ${i === 0 && r.counted ? 'lead' : ''}">${esc(c.name)}${CALLED.has(r.status) && i === 0 ? ' ✓' : ''}</span><span class="v num">${r.counted ? fmt(c.votes) : ''}</span><span class="s num">${r.counted ? pct(c.share) : '–'}</span></div>${compact ? '' : `<div class="cbar"><span style="width:${(100 * (c.votes || 0) / mx).toFixed(1)}%;background:${pcol(c.party)}"></span></div>`}`).join('');
+  const pe = r.status === 'no_source' ? '' : `<span class="num" data-tip="${fmt(r.counted)} votes counted of about ${fmt(r.expected)} expected${r.precinctsTotal ? '<br>' + fmt(r.precinctsReported) + ' of ' + fmt(r.precinctsTotal) + ' precincts reporting' : ''}">${pct(r.pctExpected, 0)} of expected vote</span>`;
+  const sub = [r.winRule === 'majority' ? 'Runoff below 50%' : r.winRule === 'rcv' ? 'Ranked choice' : '', r.lateCount ? 'Counts late' : '', r.special ? 'Special election' : ''].filter(Boolean).join(' · ');
+  return `<article class="card race ${compact ? 'compact' : ''}" data-id="${r.id}" tabindex="0" role="button" aria-label="${esc(r.name)}: ${esc(STATUS[r.status])}">
+    <div class="top"><div><h3>${esc(r.name)}</h3>${sub ? `<div class="meta">${sub}</div>` : ''}</div>${statusChip(r)}</div>
+    ${cands.length ? rows : '<div class="muted small">Candidates appear once the state feed lists them.</div>'}
+    ${needsLine(r)}
+    <div class="foot">${pe}<span class="adv-inline">${hist && hist.length > 1 ? svgSpark(hist, 90, 24) : ''}</span>${r.projMarginPts && r.counted && !compact ? `<span class="num adv-inline" data-tip="90% of simulations finish between ${pts(r.projMarginPts.p05)} and ${pts(r.projMarginPts.p95)} points for ${esc(cands[0]?.name)}">Projected ${pts(r.projMarginPts.p50)} pts</span>` : ''}</div>
+  </article>`;
+}
+function filtersHtml(key) {
+  const f = S.filters[key];
+  const states = [...new Set(S.data.races.filter(r => r.office === { senate: 'us_senate', house: 'us_house', governors: 'governor' }[key]).map(r => r.state))].sort();
+  return `<input type="search" placeholder="Search state or candidate" value="${esc(f.q)}" data-k="q" aria-label="Search">
+    <select data-k="st" aria-label="State"><option value="all">All states</option>${states.map(s => `<option value="${s}" ${f.st === s ? 'selected' : ''}>${esc(stateName(s))}</option>`).join('')}</select>
+    <div class="seg" data-k="status">${[['all', 'All'], ['open', 'Uncalled'], ['projected', 'Projected'], ['too_early', 'Too early'], ['runoff', 'Runoff/RCV'], ['withdrawn', 'Withdrawn']].map(([v, l]) => `<button data-v="${v}" class="${(f.status || 'all') === v ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <select data-k="sort" aria-label="Sort"><option value="close" ${f.sort === 'close' ? 'selected' : ''}>Closest first</option><option value="alpha" ${f.sort === 'alpha' ? 'selected' : ''}>By state</option><option value="counted" ${f.sort === 'counted' ? 'selected' : ''}>Most counted</option><option value="recent" ${f.sort === 'recent' ? 'selected' : ''}>Recently changed</option></select>`;
+}
+function applyFilters(key, races) {
+  const f = S.filters[key]; const q = f.q.trim().toLowerCase();
+  let out = races.filter(r => (f.st === 'all' || r.state === f.st) && (!q || r.name.toLowerCase().includes(q) || r.state.toLowerCase() === q || stateName(r.state).toLowerCase().includes(q) || (r.candidates || []).some(c => c.name.toLowerCase().includes(q))));
+  const st = f.status || 'all';
+  if (st === 'open') out = out.filter(r => !CALLED.has(r.status) && r.status !== 'no_source');
+  else if (st === 'runoff') out = out.filter(r => r.status === 'runoff' || r.status === 'rcv');
+  else if (st !== 'all') out = out.filter(r => r.status === st);
+  if (f.sort === 'close') out.sort((a, b) => closeness(a) - closeness(b) || a.name.localeCompare(b.name));
+  else if (f.sort === 'alpha') out.sort((a, b) => a.state.localeCompare(b.state) || (a.district || '').localeCompare(b.district || ''));
+  else if (f.sort === 'counted') out.sort((a, b) => (b.pctExpected || 0) - (a.pctExpected || 0));
+  else if (f.sort === 'recent') out.sort((a, b) => (b.statusChangedAt || 0) - (a.statusChangedAt || 0));
+  return out;
+}
+function renderList(key, office, compact) {
+  const el = $('#list-' + key); const fl = $(`.filters[data-for="${key}"]`);
+  if (!fl.dataset.ready) { fl.innerHTML = filtersHtml(key); fl.dataset.ready = '1';
+    fl.addEventListener('input', e => { const k = e.target.dataset.k; if (k) { S.filters[key][k] = e.target.value; renderList(key, office, compact); } });
+    fl.addEventListener('click', e => { const b = e.target.closest('.seg button'); if (b) { S.filters[key].status = b.dataset.v; $$('.seg button', fl).forEach(x => x.classList.toggle('on', x === b)); renderList(key, office, compact); } });
+  }
+  const races = applyFilters(key, S.data.races.filter(r => r.office === office));
+  el.innerHTML = races.length ? races.map(r => raceCard(r, compact)).join('') : '<div class="empty" style="grid-column:1/-1">No races match.</div>';
+}
+
+// ------------------------------------------------------------ render: map
+function stateSummary(st) {
+  const rs = S.data.races.filter(r => r.state === st);
+  const sen = rs.find(r => r.office === 'us_senate'), gov = rs.find(r => r.office === 'governor'), house = rs.filter(r => r.office === 'us_house');
+  const hc = { DEM: 0, REP: 0, OTH: 0, unc: 0 }, hl = { DEM: 0, REP: 0 };
+  house.forEach(r => { const l = leader(r); if (CALLED.has(r.status) && l) hc[l.party === 'DEM' || l.party === 'REP' ? l.party : 'OTH']++; else { hc.unc++; if (l && (l.party === 'DEM' || l.party === 'REP')) hl[l.party]++; } });
+  const counted = rs.reduce((a, r) => a + (r.counted || 0), 0), expected = rs.reduce((a, r) => a + (r.expected || 0), 0);
+  return { st, sen, gov, house, hc, hl, counted, expected, prog: expected ? counted / expected : 0, hasSource: S.data.states[st]?.hasSource };
+}
+function tileColor(sum, mode) {
+  const T = THEME();
+  if (!sum.hasSource) return T.uncalled;
+  if (mode === 'senate' || mode === 'governor') {
+    const r = mode === 'senate' ? sum.sen : sum.gov; if (!r) return 'transparent'; if (!r.counted) return T.uncalled;
+    const p = pDem(r); if (CALLED.has(r.status)) { const l = leader(r); return l ? (l.party === 'DEM' ? T.dem : l.party === 'REP' ? T.rep : T.ind) : T.uncalled; }
+    return divergeColor(p);
+  }
+  if (mode === 'house') { const n = sum.house.length, d = sum.hc.DEM + sum.hl.DEM * .5, g = sum.hc.REP + sum.hl.REP * .5; if (!d && !g) return T.uncalled; return divergeColor(d / (d + g)); }
+  if (mode === 'swing') { const r = sum.sen || sum.gov; return swingColor(swingFor(r)); }
+  if (mode === 'progress') { return mix(T.uncalled, THEME().dem === '#4f8ef7' ? '#d7b36a' : '#8a6a10', clamp(sum.prog, 0, 1)); }
+  return T.uncalled;
+}
+function tileSub(sum, mode) {
+  if (!sum.hasSource) return '';
+  if (mode === 'senate') return sum.sen && sum.sen.counted ? (CALLED.has(sum.sen.status) ? leader(sum.sen).party : pts(sum.sen.marginPct, 0)) : (sum.sen ? '' : '—');
+  if (mode === 'governor') return sum.gov && sum.gov.counted ? (CALLED.has(sum.gov.status) ? leader(sum.gov).party : pts(sum.gov.marginPct, 0)) : (sum.gov ? '' : '—');
+  if (mode === 'house') return `${sum.hc.DEM}–${sum.hc.REP}${sum.hc.unc ? '·' + sum.hc.unc : ''}`;
+  if (mode === 'swing') { const s = swingFor(sum.sen || sum.gov); return s == null ? '' : (s > 0 ? 'D' : 'R') + Math.abs(s).toFixed(0); }
+  if (mode === 'progress') return pct(sum.prog, 0);
+  return '';
+}
+function tileTip(sum, mode) {
+  const line = r => r ? `${esc(OFFICE[r.office])}: ${r.counted ? esc(leader(r).name) + ' ' + pts(r.marginPct) + ' pts' : 'no votes'} · ${esc(STATUS[r.status])}` : '';
+  return `<b>${esc(stateName(sum.st))}</b>${sum.hasSource ? '' : 'No live source<br>'}${[line(sum.sen), line(sum.gov)].filter(Boolean).join('<br>')}<br>House: ${sum.hc.DEM} DEM · ${sum.hc.REP} REP called, ${sum.hc.unc} uncalled<br>${pct(sum.prog, 0)} of expected vote counted${mode === 'swing' && swingFor(sum.sen || sum.gov) != null ? '<br>Swing vs 2024: ' + pts(swingFor(sum.sen || sum.gov)) + ' pts toward ' + (swingFor(sum.sen || sum.gov) > 0 ? 'DEM' : 'REP') : ''}`;
+}
+function tileMap(mode, selectable = true) {
+  const cell = 46, gap = 4, cols = 11, rows = 8, W = cols * cell, H = rows * cell;
+  const tiles = TILES.map(([st, c, r]) => {
+    const sum = stateSummary(st), fill = tileColor(sum, mode), sub = tileSub(sum, mode);
+    const dim = (mode === 'senate' && !sum.sen) || (mode === 'governor' && !sum.gov);
+    return `<g class="tile ${S.mapSel === st ? 'on' : ''} ${dim ? 'dim' : ''}" data-st="${st}" data-tip="${tileTip(sum, mode)}"><rect x="${c * cell + gap / 2}" y="${r * cell + gap / 2}" width="${cell - gap}" height="${cell - gap}" fill="${fill}"/><text x="${c * cell + cell / 2}" y="${r * cell + cell / 2 - (sub ? 1 : -4)}" text-anchor="middle">${st}</text>${sub ? `<text class="sub" x="${c * cell + cell / 2}" y="${r * cell + cell / 2 + 11}" text-anchor="middle">${esc(sub)}</text>` : ''}</g>`;
+  }).join('');
+  const T = THEME();
+  const legend = mode === 'swing' ? `<div class="ramp"><span>Toward REP</span><span class="sw" style="background:linear-gradient(90deg,${T.rep},${T.mid},${T.dem})"></span><span>Toward DEM</span><span class="muted">· statewide two-party margin so far vs 2024 presidential</span></div>`
+    : mode === 'progress' ? `<div class="ramp"><span>0%</span><span class="sw" style="background:linear-gradient(90deg,${T.uncalled},${T.dem === '#4f8ef7' ? '#d7b36a' : '#8a6a10'})"></span><span>100% of expected vote counted</span></div>`
+    : mode === 'house' ? `<div class="ramp"><span>REP seats</span><span class="sw" style="background:linear-gradient(90deg,${T.rep},${T.mid},${T.dem})"></span><span>DEM seats</span><span class="muted">· label: DEM–REP called · uncalled</span></div>`
+    : `<div class="ramp"><span>REP 100%</span><span class="sw" style="background:linear-gradient(90deg,${T.rep},${T.mid},${T.dem})"></span><span>DEM 100%</span><span class="muted">· win share in simulations; solid when called; grey when no votes or no source; faded when no race</span></div>`;
+  return `<svg class="tilemap" viewBox="0 0 ${W} ${H}" role="img" aria-label="Tile map of states coloured by ${mode}">${tiles}</svg>${legend}`;
+}
+function renderMapTab() {
+  if (S.tab !== 'map') return;
+  $('#mapCard').innerHTML = `<div class="card-h"><h2>${{ senate: 'Senate races', governor: 'Governor races', house: 'House seats', swing: 'Swing against 2024', progress: 'Counting progress' }[S.mapMode]}</h2><span class="sub">Tap a state</span></div>` + tileMap(S.mapMode);
+  renderMapSide();
+  renderSwingChart();
+}
+function renderMapSide() {
+  const el = $('#mapSide'); const st = S.mapSel;
+  if (!st) { el.innerHTML = '<div class="empty">Select a state on the map</div>'; return; }
+  const sum = stateSummary(st); const info = S.data.states[st];
+  const rs = [sum.sen, sum.gov, ...sum.house].filter(Boolean);
+  el.innerHTML = `<div class="card-h"><h2>${esc(stateName(st))}</h2><span class="sub">Polls close ${esc(info.pollCloseET)} ET${info.lateCount ? ' · counts late' : ''}</span></div>
+    <div class="facts"><div class="f"><div class="ch-lbl">Counted</div><div class="fact num">${pct(sum.prog, 0)}</div></div><div class="f"><div class="ch-lbl">House</div><div class="fact num"><span style="color:var(--dem)">${sum.hc.DEM}</span>–<span style="color:var(--rep)">${sum.hc.REP}</span></div></div>${swingFor(sum.sen || sum.gov) != null ? `<div class="f"><div class="ch-lbl">Swing vs 2024</div><div class="fact num" style="color:${swingFor(sum.sen || sum.gov) > 0 ? 'var(--dem)' : 'var(--rep)'}">${pts(swingFor(sum.sen || sum.gov))}</div></div>` : ''}</div>
+    <div class="tbl-wrap" style="margin-top:10px"><table class="tbl"><thead><tr><th>Race</th><th>Leader</th><th class="r">Margin</th><th class="r">In</th><th>Status</th></tr></thead><tbody>
+    ${rs.map(r => { const l = leader(r); return `<tr class="rowlink" data-id="${r.id}"><td>${esc(r.office === 'us_house' ? 'House ' + r.district : OFFICE[r.office])}</td><td>${l ? `<span class="ptag ${l.party}">${l.party}</span> ${esc(l.name)}` : '<span class="muted">–</span>'}</td><td class="r num">${r.counted ? pts(r.marginPct) : '–'}</td><td class="r num">${r.status === 'no_source' ? '–' : pct(r.pctExpected, 0)}</td><td>${statusChip(r)}</td></tr>`; }).join('')}
+    </tbody></table></div>
+    ${sum.hasSource ? '<div class="tiny muted" style="margin-top:8px">Tap a row for the county table and geographic analysis.</div>' : '<div class="small muted" style="margin-top:8px">No live source for this state tonight.</div>'}`;
+}
+function renderSwingChart() {
+  const el = $('#swingCard');
+  const rows = S.data.races.filter(r => (r.office === 'us_senate' || r.office === 'governor') && swingFor(r) != null && r.pctExpected >= .1)
+    .map(r => ({ r, sw: swingFor(r) })).sort((a, b) => b.sw - a.sw);
+  if (!rows.length) { el.innerHTML = '<div class="empty">Swing appears once statewide races have at least 10% of the expected vote counted.</div>'; return; }
+  const w = 900, rowH = 18, pad = { l: 150, r: 40, t: 18, b: 6 }, h = rows.length * rowH + pad.t + pad.b;
+  const lim = Math.ceil(Math.max(5, ...rows.map(x => Math.abs(x.sw))) / 5) * 5, x = v => pad.l + (v + lim) / (2 * lim) * (w - pad.l - pad.r);
+  let g = `<line x1="${x(0)}" x2="${x(0)}" y1="${pad.t - 6}" y2="${h - pad.b}" stroke="var(--line-2)"/>`;
+  [-lim, -lim / 2, lim / 2, lim].forEach(t => g += `<text x="${x(t)}" y="${pad.t - 8}" text-anchor="middle">${t > 0 ? '+' : ''}${t}</text>`);
+  rows.forEach((o, i) => { const y = pad.t + i * rowH; const col = o.sw > 0 ? 'var(--dem)' : 'var(--rep)';
+    g += `<text x="${pad.l - 6}" y="${y + 12}" text-anchor="end">${esc(o.r.name)}</text><rect x="${Math.min(x(0), x(o.sw)).toFixed(1)}" y="${y + 3}" width="${Math.abs(x(o.sw) - x(0)).toFixed(1)}" height="${rowH - 7}" rx="2" fill="${col}" data-tip="<b>${esc(o.r.name)}</b>Two-party margin now ${pts(swingFor(o.r) + (S.data.priors[o.r.state] || 0))} pts for DEM<br>2024 presidential ${pts(S.data.priors[o.r.state])} pts for DEM<br>Swing ${pts(o.sw)} · ${pct(o.r.pctExpected, 0)} counted"/>`; });
+  el.innerHTML = `<div class="legend" style="margin:0 0 6px"><span><i style="background:var(--dem)"></i>Swing toward Democrats</span><span><i style="background:var(--rep)"></i>Swing toward Republicans</span><span class="muted">Points of two-party margin, statewide races with 10% or more counted. Early batches skew; read with the counted share.</span></div><svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Statewide swing versus 2024">${g}</svg>`;
+}
+
+// ------------------------------------------------------------ render: states table
+function renderStates() {
+  const d = S.data; const srcBy = {}; d.sources.forEach(s => srcBy[s.state] = s);
+  const rows = Object.keys(d.states).sort().map(st => {
+    const sum = stateSummary(st), s = srcBy[st], info = d.states[st];
+    const when = s && s.fetchedAt ? new Date(s.fetchedAt).toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'America/New_York' }) + ' ET' : '–';
+    const health = !info.hasSource ? '<span class="chip no_source">No live source</span>' : d.mode === 'demo' ? '<span class="chip">Simulation</span>' : s && s.ok && !s.stale ? '<span class="chip" style="color:var(--good)">OK</span>' : s && s.ok ? '<span class="chip" style="color:var(--warn)">Stale</span>' : '<span class="chip" style="color:var(--bad)">Failing</span>';
+    const races = [sum.sen ? 'Senate' : '', sum.gov ? 'Governor' : '', `${sum.house.length} House`].filter(Boolean).join(' · ');
+    return `<tr class="rowlink" data-st="${st}"><td><b>${esc(info.name)}</b></td><td>${health}</td><td>${s && s.source ? `<a href="${esc(s.source)}" target="_blank" rel="noopener">${esc(s.name || s.source)}</a>` : (s && s.name ? esc(s.name) : '<span class="muted">–</span>')}</td><td class="num">${when}</td><td>${races}</td><td class="num r"><span class="pbar"><span style="width:${(100 * sum.prog).toFixed(0)}%;background:var(--accent)"></span></span> ${pct(sum.prog, 0)}</td><td>${esc(info.pollCloseET)} ET</td></tr>`;
+  }).join('');
+  $('#statesTable').innerHTML = `<table class="tbl"><thead><tr><th>State</th><th>Source health</th><th>Source</th><th>Last read</th><th>Races</th><th class="r">Counted</th><th>Polls close</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// ------------------------------------------------------------ render: race modal
+async function openRace(id) {
+  const r = raceById(id); if (!r) return; S.openRace = id;
+  const bg = $('#modalBg'); bg.classList.add('on'); document.body.style.overflow = 'hidden';
+  $('#modal').innerHTML = modalHtml(r, null);
+  if (r.status !== 'no_source') {
+    const sf = await loadStateFile(r.state);
+    if (S.openRace === id) $('#modal').innerHTML = modalHtml(r, sf);
+  }
+}
+function closeModal() { $('#modalBg').classList.remove('on'); document.body.style.overflow = ''; S.openRace = null; }
+$('#modalBg').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+async function loadStateFile(st) {
+  const cached = S.stateFiles[st];
+  if (cached && cached.generatedAt >= (S.data?.generatedAt || 0)) return cached;
+  try { const res = await fetch(`data/states/${st}.json?t=${S.data?.generatedAt || Date.now()}`, { cache: 'no-store' }); if (!res.ok) throw 0; const j = await res.json(); S.stateFiles[st] = j; return j; } catch (e) { return cached || null; }
+}
+function modalHtml(r, sf) {
+  const cands = r.candidates || []; const A = cands[0], B = cands[1];
+  const total = Math.max(1, r.counted || 1);
+  const detail = sf?.races?.[r.id] || null; const hist = sf?.history?.[r.id] || S.data.hist?.[r.id] || [];
+  const model = sf?.model?.[r.id] || {}; const histo = r.hist || model.hist; const callLog = (model.callHistory && model.callHistory.length ? model.callHistory : r.callHistory) || [];
+  const sub = [stateName(r.state), r.special ? 'special election' : '', r.winRule === 'majority' ? 'runoff if nobody passes 50%' : r.winRule === 'rcv' ? 'ranked-choice tabulation if nobody passes 50%' : 'plurality wins', r.lateCount ? 'late-counting state' : '', r.incumbentParty ? 'seat held by ' + partyLabel(r.incumbentParty) + 's' : ''].filter(Boolean).join(' · ');
+  const candRows = cands.map((c, i) => `<div class="cand" style="grid-template-columns:auto 1fr auto auto auto"><span class="ptag ${c.party}">${c.party}</span><span class="nm ${i === 0 && r.counted ? 'lead' : ''}">${esc(c.name)}${CALLED.has(r.status) && i === 0 ? ' ✓' : ''}</span><span class="v num">${r.counted ? fmt(c.votes) : ''}</span><span class="s num">${r.counted ? pct(c.share) : '–'}</span><span class="num adv-inline" style="min-width:52px;justify-content:flex-end" data-tip="Share of ${S.data.draws} simulations this candidate wins">${c.p != null && r.counted && i < 2 ? pct(c.p, i < 2 && c.p > .999 ? 1 : 0) : ''}</span></div><div class="cbar"><span style="width:${(100 * (c.votes || 0) / total).toFixed(1)}%;background:${pcol(c.party)}"></span></div>`).join('');
+  const facts = `<div class="facts">
+    <div class="f"><div class="ch-lbl">Counted</div><div class="fact num">${r.status === 'no_source' ? '–' : pct(r.pctExpected, 0)}</div><div class="tiny muted num">${fmt(r.counted)} of ~${fmt(r.expected)}</div></div>
+    <div class="f"><div class="ch-lbl">Margin</div><div class="fact num" style="color:${A && r.counted ? pcol(A.party) : 'inherit'}">${r.counted ? pts(r.marginPct) : '–'}</div><div class="tiny muted num">${r.counted ? fmt(r.margin) + ' votes' : ''}</div></div>
+    ${r.precinctsTotal ? `<div class="f"><div class="ch-lbl">Precincts</div><div class="fact num">${fmt(r.precinctsReported)}</div><div class="tiny muted num">of ${fmt(r.precinctsTotal)}</div></div>` : ''}
+    ${r.projMarginPts && r.counted ? `<div class="f adv"><div class="ch-lbl">Projected final</div><div class="fact num">${pts(r.projMarginPts.p50)}</div><div class="tiny muted num">90% band ${pts(r.projMarginPts.p05)} to ${pts(r.projMarginPts.p95)}</div></div>` : ''}
+    ${r.turnoutFactor && r.counted ? `<div class="f adv"><div class="ch-lbl">Turnout factor</div><div class="fact num">${r.turnoutFactor.toFixed(2)}</div><div class="tiny muted num">${r.completeUnits}/${r.units} units complete</div></div>` : ''}
+  </div>`;
+  const countyTable = detail ? `<div class="tbl-wrap" style="max-height:360px;overflow:auto"><table class="tbl"><thead><tr><th>County</th><th class="r">In</th>${(A ? `<th class="r">${esc(A.name.split(' ').pop())}</th>` : '')}${(B ? `<th class="r">${esc(B.name.split(' ').pop())}</th>` : '')}<th class="r">Margin</th><th class="r">Remaining</th>${S.view === 'advanced' ? '<th class="r">Swing</th>' : ''}</tr></thead><tbody>
+    ${detail.slice().sort((a, b) => (b.expected || 0) - (a.expected || 0)).map(u => { const av = u.candidates.find(c => A && c[0] === A.name)?.[2] ?? 0, bv = u.candidates.find(c => B && c[0] === B.name)?.[2] ?? 0; const base = baselineMarginA(u, A?.party, B?.party);
+      return `<tr><td>${esc(u.name)}${u.complete ? ' <span class="tiny muted">✓</span>' : ''}</td><td class="r num">${u.precincts ? fmt(u.precinctsReported) + '/' + fmt(u.precincts) : pct(u.counted / (u.expected || 1), 0)}</td><td class="r num">${fmt(av)}</td><td class="r num">${fmt(bv)}</td><td class="r num" style="color:${u.marginPct == null ? 'inherit' : u.marginPct >= 0 ? pcol(A.party) : pcol(B.party)}">${u.marginPct == null ? '–' : pts(u.marginPct)}</td><td class="r num">${fmt(u.remaining)}</td>${S.view === 'advanced' ? `<td class="r num">${base == null || u.marginPct == null ? '–' : pts(u.marginPct - base)}</td>` : ''}</tr>`; }).join('')}
+    </tbody></table></div><div class="tiny muted" style="margin-top:6px">Sorted by expected vote. ✓ marks counties the model treats as complete. Swing compares the county's current margin with its 2024 baseline where a county baseline is loaded.</div>` : (r.status === 'no_source' ? '<div class="muted small">No live source for this state.</div>' : '<div class="muted small">Loading county detail…</div>');
+  return `<button class="icon-btn close" onclick="closeModal()" aria-label="Close">✕</button>
+    <h2>${esc(r.name)}</h2><div class="sub" style="margin-top:4px">${sub}</div>
+    <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">${statusChip(r)}${r.statusChangedAt ? `<span class="tiny muted">since ${new Date(r.statusChangedAt).toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/New_York' })} ET</span>` : ''}</div>
+    ${facts}
+    <div class="mgrid">
+      <div>
+        <div class="panel"><h4>Candidates <span class="sub">votes · share${S.view === 'advanced' ? ' · win share in simulations' : ''}</span></h4>${cands.length ? candRows : '<div class="muted small">Candidates appear once the state feed lists them.</div>'}${needsLine(r)}
+          ${r.needs && r.needs.shareOf1_5x != null && !CALLED.has(r.status) && r.counted ? `<div class="tiny muted adv" style="margin-top:4px">Call check: with 1.5× the remaining vote, ${esc(r.needs.candidate)} would need ${pct(r.needs.shareOf1_5x, 1)} (call requires 75% or more, plus a 99.5% win share and 25% counted).</div>` : ''}</div>
+        <div class="panel adv" style="margin-top:12px"><h4>Simulated final margin <span class="sub">${S.data.draws} draws · points for ${esc(A?.name || 'leader')}</span></h4>${histo ? svgHist(histo, A?.party) : '<div class="muted small">Available once votes are counted.</div>'}<div class="legend"><span><i style="background:${pcol(A?.party)}"></i>${esc(A?.name || '')} wins</span><span><i style="background:${pcol(B?.party)}"></i>${esc(B?.name || '')} wins</span><span class="muted">dashed line: tie</span></div></div>
+        <div class="panel adv" style="margin-top:12px"><h4>Win share through the night</h4>${hist.length > 1 ? svgLine(hist.map(h => [h[0], A?.party === 'DEM' ? h[1] : A?.party === 'REP' ? 1 - h[1] : h[1]]), 1, 420, 90, pcol(A?.party), 'Win share over time') : '<div class="muted small">Needs a few more updates.</div>'}<div class="tiny muted">Share of simulations won by ${esc(A?.name || 'the leader')} at each update.</div></div>
+        ${callLog.length ? `<div class="panel" style="margin-top:12px"><h4>Status log</h4><ul class="callog">${callLog.slice().reverse().map(c => `<li>${c.at ? new Date(c.at).toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/New_York' }) + ' ET · ' : ''}${esc(STATUS[c.status])}${c.leader && c.status !== 'no_votes' ? ' · ' + esc(c.leader) + ' leading' : ''} · ${pct(c.pct, 0)} counted${c.winProb != null && c.status !== 'no_votes' ? ' · ' + pct(c.winProb, 0) + ' win share' : ''}</li>`).join('')}</ul></div>` : ''}
+      </div>
+      <div>
+        <div class="panel"><h4>Geographic analysis <span class="sub">${esc(stateName(r.state))}</span></h4>
+          <div class="ch-lbl" style="margin:4px 0">Where the remaining vote is</div>${detail ? svgRemaining(detail, A?.party, B?.party) : '<div class="muted small">Loading…</div>'}
+          <div class="legend"><span><i style="background:${pcol(A?.party)}"></i>Expected ${A?.party || ''}</span><span><i style="background:${pcol(B?.party)}"></i>Expected ${B?.party || ''}</span><span class="muted">largest 12 counties by remaining vote</span></div>
+          <div class="adv"><div class="ch-lbl" style="margin:12px 0 4px">County margins against the 2024 baseline</div>${detail ? svgScatter(detail, A?.party, B?.party) : ''}<div class="tiny muted">Dot size is expected vote; opacity is the share counted. Above the diagonal the county is running ahead of its baseline for ${esc(A?.name || 'the leader')}.</div></div>
+        </div>
+        <div class="panel" style="margin-top:12px"><h4>County table <span class="sub">${detail ? detail.length + ' units' : ''}</span></h4>${countyTable}</div>
+      </div>
+    </div>`;
+}
+
+// ------------------------------------------------------------ render all
+function renderAll() {
+  const d = S.data; if (!d) return;
+  renderHeader();
+  if (S.tab === 'overview') {
+    $('#chamberCards').innerHTML = chamberCard('senate', 'Senate') + chamberCard('house', 'House') + chamberCard('governors', 'Governors');
+    const key = d.races.filter(r => (r.office === 'us_senate' || r.office === 'governor') && r.status !== 'no_source').sort((a, b) => closeness(a) - closeness(b)).slice(0, 9);
+    $('#keyRaces').innerHTML = key.length ? key.map(r => raceCard(r)).join('') : '<div class="empty" style="grid-column:1/-1">No statewide races with a live source yet.</div>';
+    $('#ovMapCard').innerHTML = tileMap('senate');
+  } else if (S.tab === 'senate') { $('#senateCard').innerHTML = chamberCard('senate', 'Senate', true, true); $('#senateAdv').innerHTML = chamberAdv('senate'); renderList('senate', 'us_senate', false); }
+  else if (S.tab === 'house') { $('#houseCard').innerHTML = chamberCard('house', 'House', true, true); $('#houseAdv').innerHTML = chamberAdv('house'); renderList('house', 'us_house', true); }
+  else if (S.tab === 'governors') { $('#govCard').innerHTML = chamberCard('governors', 'Governors', true, true); $('#govAdv').innerHTML = chamberAdv('governors'); renderList('governors', 'governor', false); }
+  else if (S.tab === 'map') renderMapTab();
+  else if (S.tab === 'states') renderStates();
+  $('#footSources').innerHTML = 'Sources: ' + (d.sources.filter(s => s.source).map(s => `<a href="${esc(s.source)}" target="_blank" rel="noopener">${esc(s.name || s.state)}</a>`).join(' · ') || (d.mode === 'demo' ? 'simulation only' : 'none configured')) + `. Baselines: MIT Election Data + Science Lab county returns and statewide 2024 presidential results. Updates every ${d.updateIntervalSec} seconds.`;
+  if (S.openRace) { const r = raceById(S.openRace); if (r) loadStateFile(r.state).then(sf => { if (S.openRace === r.id) $('#modal').innerHTML = modalHtml(r, sf); }); }
+}
+document.addEventListener('click', e => {
+  const rc = e.target.closest('[data-id]'); if (rc && !e.target.closest('a')) { openRace(rc.dataset.id); return; }
+  const tile = e.target.closest('.tile, tr[data-st]'); if (tile) { S.mapSel = tile.dataset.st; if (S.tab !== 'map') { setTab('map'); } else renderMapTab(); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.classList?.contains('race')) openRace(e.target.dataset.id); });
+
+// ------------------------------------------------------------ data loading
+async function load() {
+  try {
+    const res = await fetch('data/latest.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+    d.priors = d.priors || {};
+    d.hist = S.data?.hist || {};
+    // keep a small in-page history for sparklines on cards
+    d.races.forEach(r => { const p = pDem(r); if (p == null || r.status === 'no_source') return; const h = d.hist[r.id] = d.hist[r.id] || []; if (!h.length || h[h.length - 1][0] !== d.generatedAt) { h.push([d.generatedAt, p, r.pctExpected]); if (h.length > 60) h.shift(); } });
+    S.data = d; S.lastOk = Date.now();
+    renderAll();
+  } catch (err) {
+    if (!S.data) $('#notices').innerHTML = `<div class="notice"><strong>Could not load data.</strong> ${esc(err.message)}. Retrying every 20 seconds.</div>`;
+    else { $('#updPill').classList.add('warn'); $('#updText').textContent = 'Reload failed · showing ' + S.data.generatedLabel; }
+  }
+}
+if (location.hash && $(`#tabs button[data-t="${location.hash.slice(1)}"]`)) setTab(location.hash.slice(1));
+load();
+setInterval(load, 20000);
+setInterval(() => { if (S.data) renderHeader(); }, 15000);
+</script>
+</body>
+</html>
